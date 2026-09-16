@@ -281,6 +281,34 @@ h3.display { font-size: clamp(1.5rem, 2.6vw, 2.1rem); }
 }
 .hero__inner { position: relative; z-index: 2; width: 100%; }
 .hero__content { max-width: 660px; margin-left: auto; text-align: left; color: #fff; }
+.hero__badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-bottom: 22px; padding: 11px 22px 11px 18px;
+  border-radius: 100px;
+  background: linear-gradient(100deg, var(--amber) 0%, #f0b95f 55%, #f6c96f 100%);
+  border: 1px solid rgba(255,255,255,.5);
+  color: var(--ink); font-weight: 800; font-size: .96rem; letter-spacing: .01em;
+  text-transform: uppercase;
+  box-shadow: 0 10px 34px rgba(216,155,74,.5), 0 2px 6px rgba(0,0,0,.15);
+  animation: badgeGlow 2.4s ease-in-out infinite;
+}
+.hero__badge-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--rust-deep); flex: none;
+  box-shadow: 0 0 0 0 rgba(122,58,32,.55);
+  animation: badgePulse 1.8s ease-out infinite;
+}
+@keyframes badgePulse {
+  0%   { box-shadow: 0 0 0 0 rgba(122,58,32,.55); }
+  70%  { box-shadow: 0 0 0 10px rgba(122,58,32,0); }
+  100% { box-shadow: 0 0 0 0 rgba(122,58,32,0); }
+}
+@keyframes badgeGlow {
+  0%, 100% { box-shadow: 0 10px 30px rgba(216,155,74,.42), 0 2px 6px rgba(0,0,0,.15); }
+  50%      { box-shadow: 0 12px 42px rgba(216,155,74,.72), 0 2px 6px rgba(0,0,0,.15); }
+}
+.js .hero__badge { opacity: 0; transform: translateY(16px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.hero.is-in .hero__badge { opacity: 1; transform: none; }
 .hero h1 { color: #fff; margin-bottom: 26px; text-shadow: 0 3px 26px rgba(0,0,0,.4); }
 .hero h1 em { font-style: italic; color: var(--amber-soft); }
 .hero__sub {
@@ -450,15 +478,6 @@ h3.display { font-size: clamp(1.5rem, 2.6vw, 2.1rem); }
 /* Фото майлстоуна серое, пока до него не доскроллили; окрашивается при появлении */
 .js .road-card__media img { filter: grayscale(1) contrast(.92) brightness(1.02); }
 .road-item.is-lit .road-card__media img { filter: none; }
-.road-card__month {
-  position: absolute; top: 14px; left: 14px;
-  background: rgba(42,33,28,.82); color: var(--amber);
-  font-weight: 700; font-size: .8rem; padding: 6px 13px; border-radius: 100px;
-  backdrop-filter: blur(6px);
-  transition: background .6s var(--ease), color .6s var(--ease);
-}
-.js .road-card__month { background: rgba(88,80,72,.6); color: #efe7db; }
-.road-item.is-lit .road-card__month { background: rgba(42,33,28,.82); color: var(--amber); }
 .road-card__body { padding: 20px 24px 26px; }
 .road-card__body h3 { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 8px; }
 .road-card__body p { color: var(--ink-soft); font-size: .96rem; }
@@ -604,7 +623,7 @@ h3.display { font-size: clamp(1.5rem, 2.6vw, 2.1rem); }
 
 /* ---------- 18. Плавающая кнопка ---------- */
 .fab {
-  position: fixed; right: 22px; bottom: 22px; z-index: 90;
+  position: fixed; left: 22px; bottom: 55px; z-index: 90;
   display: inline-flex; align-items: center; gap: 10px;
   padding: 15px 24px; border-radius: 100px;
   background: var(--rust); color: #fff; font-weight: 700;
@@ -614,6 +633,24 @@ h3.display { font-size: clamp(1.5rem, 2.6vw, 2.1rem); }
 }
 .fab.is-visible { transform: none; opacity: 1; }
 .fab:hover { background: var(--rust-deep); }
+/* На десктопе — обе кнопки в правом нижнем углу на одной линии.
+   Порядок: «Записаться» у самого угла, кнопка чата Bitrix — слева от неё
+   (чат сдвигаем влево, освобождая угол под «Записаться»).
+   На мобильном (≤860px): «Записаться» слева снизу, чат справа — обе на одной высоте. */
+@media (min-width: 861px) {
+  .fab { left: auto; right: 22px; bottom: 55px; }
+  body .b24-widget-button-wrapper.b24-widget-button-position-bottom-right { right: 205px !important; }
+}
+
+/* Перекраска виджета Bitrix24 «Связаться» под фирменный цвет (best-effort;
+   гарантированно цвет меняется в панели Bitrix24 → Контакт-центр → Внешний вид) */
+.b24-widget-button-inner-block,
+.b24-widget-button-inner-mask {
+  background: linear-gradient(135deg, var(--rust) 0%, var(--rust-deep) 100%) !important;
+}
+.b24-widget-button-pulse { background: var(--amber) !important; }
+.b24-widget-button-inner-item svg,
+.b24-widget-button-inner-item path { fill: #fff !important; }
 
 /* ---------- 19. Reveal on scroll (только при доступном JS) ---------- */
 .js .reveal { opacity: 0; transform: translateY(38px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
@@ -713,6 +750,6 @@ h3.display { font-size: clamp(1.5rem, 2.6vw, 2.1rem); }
 /* ---------- 23. Уважение к настройкам движения ---------- */
 @media (prefers-reduced-motion: reduce) {
   * { animation-duration: .001ms !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
-  .reveal, .reveal-left, .reveal-right, .hero__sub, .hero__actions { opacity: 1 !important; transform: none !important; }
+  .reveal, .reveal-left, .reveal-right, .hero__sub, .hero__actions, .hero__badge { opacity: 1 !important; transform: none !important; }
   .reveal-line > span { transform: none !important; }
 }
