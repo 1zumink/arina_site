@@ -11,8 +11,21 @@
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;0,800;1,500;1,600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="assets/css/style.css" />
   <script>document.documentElement.classList.add('js');</script>
+  <!-- Yandex.Metrika counter -->
+  <script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+      m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+      m[i].l=1*new Date();
+      for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+      k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=112756560', 'ym');
+
+    ym(112756560, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  </script>
+  <!-- /Yandex.Metrika counter -->
 </head>
 <body>
+  <noscript><div><img src="https://mc.yandex.ru/watch/112756560" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 
   <!-- Прогресс-бар прокрутки -->
   <div class="scroll-progress" aria-hidden="true"></div>
@@ -375,8 +388,9 @@
       <h2 class="display">Время начать подготовку</h2>
       <p class="cta-form__sub">Не нужно сразу принимать решение об обучении. Оставь заявку — встретимся онлайн и поговорим о твоей подготовке, ты сможешь задать любой вопрос</p>
 
-      <!-- Поля названы под поля Bitrix24 CRM (NAME, PHONE, CHANNEL, FORMAT) -->
-      <form class="form" id="lead-form" novalidate>
+      <!-- Заявки уходят в Formspree; поля названы и под Bitrix24 CRM (NAME, PHONE, CHANNEL, FORMAT) -->
+      <form class="form" id="lead-form" action="https://formspree.io/f/xvkggozj" method="POST" novalidate>
+        <input type="hidden" name="_subject" value="Новая заявка с сайта — обществознание" />
         <div class="field"><input type="text" name="NAME" placeholder="Твоё имя" required autocomplete="name" /></div>
         <div class="field"><input type="text" name="PHONE" placeholder="Номер телефона или ссылка на социальную сеть" required /></div>
         <div class="field"><input type="text" name="CHANNEL" placeholder="Как мне лучше с тобой связаться" /></div>

@@ -189,19 +189,14 @@
   });
 
   /* =============================================================
-     ФОРМА ЗАЯВКИ — точка интеграции с Bitrix24 CRM
+     ФОРМА ЗАЯВКИ
      -------------------------------------------------------------
-     Ниже — рабочая заглушка. Когда будете подключать Bitrix24:
+     Заявки уходят в Formspree (AJAX, без перехода со страницы).
+     Endpoint задан в action формы: https://formspree.io/f/xvkggozj
 
-     ВАРИАНТ А (входящий вебхук CRM — создание лида):
-       1. В Bitrix24 создайте вебхук с правом crm.lead.add.
-       2. Впишите его URL в BITRIX_WEBHOOK_URL ниже.
-       3. Раскомментируйте блок fetch(...) в submitToBitrix().
-       Поля формы уже названы под CRM: NAME, PHONE (контакт), COMMENTS.
-
-     ВАРИАНТ Б (готовая CRM-форма Bitrix24 «встроенный скрипт»):
-       Просто вставьте <script data-b24-form=...> от Bitrix на место
-       нашей <form> — тогда этот обработчик не нужен.
+     Дополнительно (необязательно) можно дублировать лид в Bitrix24:
+     впишите URL входящего вебхука с правом crm.lead.add в
+     BITRIX_WEBHOOK_URL — пустое значение = Bitrix не используется.
      ============================================================= */
   const BITRIX_WEBHOOK_URL = ""; // напр.: https://ваш-портал.bitrix24.ru/rest/1/xxxxxxxx/crm.lead.add.json
 
@@ -209,14 +204,17 @@
   if (form) {
     const success = $(".form__success", form.parentElement) || $(".form__success");
 
+    async function submitToFormspree() {
+      const res = await fetch(form.action, {
+        method: "POST",
+        body: new FormData(form),
+        headers: { Accept: "application/json" }
+      });
+      return res.ok;
+    }
+
     async function submitToBitrix(data) {
-      // Если вебхук не задан — эмулируем успешную отправку (демо-режим).
-      if (!BITRIX_WEBHOOK_URL) {
-        await new Promise(r => setTimeout(r, 500));
-        console.info("[demo] Заявка (Bitrix не подключён):", data);
-        return true;
-      }
-      // Боевой режим: создаём лид в Bitrix24 CRM.
+      if (!BITRIX_WEBHOOK_URL) return true;
       const payload = {
         fields: {
           TITLE: "Заявка с сайта — " + (data.format || "подготовка"),
@@ -251,7 +249,8 @@
       const original = btn ? btn.innerHTML : "";
       if (btn) { btn.disabled = true; btn.innerHTML = "Отправляем…"; }
       try {
-        const ok = await submitToBitrix(data);
+        const ok = await submitToFormspree();
+        if (ok) submitToBitrix(data).catch(() => {}); // дубль в CRM не должен ломать отправку
         if (ok && success) {
           form.style.display = "none";
           success.classList.add("is-visible");
